@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id "io.freefair.lombok" version "5.3.0"
-
 }
 
 group 'com.learnreaactiveprogramming'
@@ -15,7 +13,7 @@ dependencies {
     implementation("io.projectreactor:reactor-core:3.4.0")
 
     //log - logback
-    implementation("ch.qos.logback:logback-classic:1.2.3")
+    implementation('ch.qos.logback:logback-classic:1.4.12')
 
     //reactor-debug-agent
     implementation('io.projectreactor:reactor-tools:3.4.0')
@@ -26,6 +24,10 @@ dependencies {
     testImplementation("org.mockito:mockito-core:3.2.4")
     testImplementation("org.mockito:mockito-junit-jupiter:3.2.4")
 
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 test {
