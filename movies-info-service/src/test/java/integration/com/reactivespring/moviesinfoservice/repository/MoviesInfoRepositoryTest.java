@@ -1,5 +1,6 @@
 package com.reactivespring.moviesinfoservice.repository;
 
+import com.reactivespring.moviesinfoservice.TestContainersConfig;
 import com.reactivespring.moviesinfoservice.domain.MovieInfo;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @DataMongoTest
 @ActiveProfiles("test")
-class MovieInfoRepositoryTest extends AbstractRepositoryTest {
+class MoviesInfoRepositoryTest extends TestContainersConfig {
     @Autowired
     private MovieInfoRepository movieInfoRepository;
 
