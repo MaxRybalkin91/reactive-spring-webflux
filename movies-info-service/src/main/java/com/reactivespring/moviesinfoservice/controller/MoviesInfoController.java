@@ -3,10 +3,12 @@ package com.reactivespring.moviesinfoservice.controller;
 import com.reactivespring.moviesinfoservice.domain.MovieInfo;
 import com.reactivespring.moviesinfoservice.service.MoviesInfoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +16,7 @@ import reactor.core.publisher.Mono;
 @RestController
 @RequestMapping("/v1/moviesInfo")
 @RequiredArgsConstructor
+@Validated
 @Slf4j
 public class MoviesInfoController {
     private final MoviesInfoService moviesInfoService;
@@ -24,7 +27,7 @@ public class MoviesInfoController {
     }
 
     @GetMapping("{id}")
-    public Mono<ResponseEntity<MovieInfo>> getMovieInfoById(@PathVariable("id") String id) {
+    public Mono<ResponseEntity<MovieInfo>> getMovieInfoById(@PathVariable("id") @NotBlank String id) {
         return moviesInfoService.getMovieInfoById(id)
                 .map(movieInfo1 -> ResponseEntity.ok()
                         .body(movieInfo1))
@@ -40,13 +43,13 @@ public class MoviesInfoController {
 
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Mono<MovieInfo> updateMovieInfo(@PathVariable("id") String id, @RequestBody MovieInfo updatedMovieInfo) {
+    public Mono<MovieInfo> updateMovieInfo(@PathVariable("id") @NotBlank String id, @RequestBody @Valid MovieInfo updatedMovieInfo) {
         return moviesInfoService.updateMovieInfoById(updatedMovieInfo, id);
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Mono<Void> deleteMovieInfoById(@PathVariable("id") String id) {
+    public Mono<Void> deleteMovieInfoById(@PathVariable("id") @NotBlank String id) {
         return moviesInfoService.deleteMovieInfoById(id);
     }
 }

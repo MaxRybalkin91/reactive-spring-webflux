@@ -139,4 +139,34 @@ public class MoviesInfoControllerUnitTest {
                 .isNoContent()
                 .expectBody(Void.class);
     }
+
+    @Test
+    void deleteMovieInfoByNullableId() {
+        webTestClient
+                .delete()
+                .uri(MOVIES_INFO_URL + "/{id}", " ")
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
+
+    @Test
+    void findMovieInfoByNullableId() {
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", " ")
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
+
+    @Test
+    void updateMovieInfoByNullableId() {
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", " ")
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
 }
