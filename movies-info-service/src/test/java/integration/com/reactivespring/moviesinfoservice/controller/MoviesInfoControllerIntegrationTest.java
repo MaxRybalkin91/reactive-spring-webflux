@@ -77,7 +77,6 @@ class MoviesInfoControllerIntegrationTest extends TestContainersConfig {
                 .is2xxSuccessful()
                 .expectBodyList(MovieInfo.class)
                 .hasSize(3);
-
     }
 
     @Test
@@ -91,7 +90,6 @@ class MoviesInfoControllerIntegrationTest extends TestContainersConfig {
                 .is2xxSuccessful()
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Dark Knight Rises");
-
     }
 
     @Test

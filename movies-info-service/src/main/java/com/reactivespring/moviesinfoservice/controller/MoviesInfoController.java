@@ -41,7 +41,7 @@ public class MoviesInfoController {
     @PutMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public Mono<MovieInfo> updateMovieInfo(@PathVariable("id") String id, @RequestBody MovieInfo updatedMovieInfo) {
-        return moviesInfoService.updateMovieInfo(updatedMovieInfo, id);
+        return moviesInfoService.updateMovieInfoById(updatedMovieInfo, id);
     }
 
     @DeleteMapping("{id}")
