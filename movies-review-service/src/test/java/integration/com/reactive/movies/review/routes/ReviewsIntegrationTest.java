@@ -65,6 +65,20 @@ public class ReviewsIntegrationTest extends TestContainersConfig {
 
     @Test
     @DirtiesContext
+    void addReview_invalidBody() {
+        var review = new Review();
+
+        webTestClient
+                .post()
+                .uri(REVIEWS_URL)
+                .bodyValue(review)
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
+    }
+
+    @Test
+    @DirtiesContext
     void getAllReviews_success() {
         webTestClient
                 .get()
@@ -96,5 +110,17 @@ public class ReviewsIntegrationTest extends TestContainersConfig {
                     assert updatedMovieReview.getRating() != null;
                     assertEquals(review.getRating(), updatedMovieReview.getRating());
                 });
+    }
+
+    @Test
+    @DirtiesContext
+    void updateReview_badRequest() {
+        webTestClient
+                .put()
+                .uri(REVIEWS_URL + "/{id}", "abc")
+                .bodyValue(new Review())
+                .exchange()
+                .expectStatus()
+                .isBadRequest();
     }
 }

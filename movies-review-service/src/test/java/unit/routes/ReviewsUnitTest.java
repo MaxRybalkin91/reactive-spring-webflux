@@ -1,6 +1,7 @@
 package routes;
 
 import com.reactive.movies.review.domain.Review;
+import com.reactive.movies.review.exception.handler.GlobalErrorHandler;
 import com.reactive.movies.review.handler.ReviewHandler;
 import com.reactive.movies.review.repository.ReviewRepository;
 import com.reactive.movies.review.router.ReviewRouter;
@@ -18,7 +19,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 @WebFluxTest
-@ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class})
+@ContextConfiguration(classes = {ReviewRouter.class, ReviewHandler.class, GlobalErrorHandler.class})
 @AutoConfigureWebTestClient
 public class ReviewsUnitTest {
     private static final String REVIEWS_URL = "/v1/reviews";
