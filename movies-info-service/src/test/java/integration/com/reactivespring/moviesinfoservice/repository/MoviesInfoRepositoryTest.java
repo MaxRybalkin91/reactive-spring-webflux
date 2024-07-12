@@ -13,6 +13,7 @@ import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @DataMongoTest
 @ActiveProfiles("test")
@@ -52,11 +53,44 @@ class MoviesInfoRepositoryTest extends TestContainersConfig {
     }
 
     @Test
-    void checkGettingEachMovie() {
+    void checkGettingEachMovieById() {
         for (MovieInfo movie : MOVIE_INFOS) {
+            assert movie.getMovieInfoId() != null;
             StepVerifier.create(movieInfoRepository.findById(movie.getMovieInfoId()))
                     .assertNext(movieInfo -> {
-                        assert (movieInfo.getMovieInfoId().equals(movie.getMovieInfoId()));
+                        assert (Objects.equals(movieInfo.getMovieInfoId(), movie.getMovieInfoId()));
+                        assert (movieInfo.getName().equals(movie.getName()));
+                        assert (movieInfo.getYear().equals(movie.getYear()));
+                        for (int i = 0; i < movie.getCast().size(); i++) {
+                            assert (movieInfo.getCast().get(i).equals(movie.getCast().get(i)));
+                        }
+                    })
+                    .verifyComplete();
+        }
+    }
+
+    @Test
+    void checkGettingEachMovieByYear() {
+        for (MovieInfo movie : MOVIE_INFOS) {
+            StepVerifier.create(movieInfoRepository.findByYear(movie.getYear()))
+                    .assertNext(movieInfo -> {
+                        assert (Objects.equals(movieInfo.getMovieInfoId(), movie.getMovieInfoId()));
+                        assert (movieInfo.getName().equals(movie.getName()));
+                        assert (movieInfo.getYear().equals(movie.getYear()));
+                        for (int i = 0; i < movie.getCast().size(); i++) {
+                            assert (movieInfo.getCast().get(i).equals(movie.getCast().get(i)));
+                        }
+                    })
+                    .verifyComplete();
+        }
+    }
+
+    @Test
+    void checkGettingEachMovieByName() {
+        for (MovieInfo movie : MOVIE_INFOS) {
+            StepVerifier.create(movieInfoRepository.findByName(movie.getName()))
+                    .assertNext(movieInfo -> {
+                        assert (Objects.equals(movieInfo.getMovieInfoId(), movie.getMovieInfoId()));
                         assert (movieInfo.getName().equals(movie.getName()));
                         assert (movieInfo.getYear().equals(movie.getYear()));
                         for (int i = 0; i < movie.getCast().size(); i++) {
@@ -91,8 +125,13 @@ class MoviesInfoRepositoryTest extends TestContainersConfig {
     @Test
     @DirtiesContext
     void checkMovieUpdating() {
-        var movie = movieInfoRepository.findById(MOVIE_INFOS.get(0).getMovieInfoId()).block();
+        assert !MOVIE_INFOS.isEmpty();
+        assert MOVIE_INFOS.get(0) != null;
+        var movieId = MOVIE_INFOS.get(0).getMovieInfoId();
+        assert movieId != null;
+        var movie = movieInfoRepository.findById(movieId).block();
         assert movie != null;
+
         movie.setYear(2024);
 
         var movieUpdated = movieInfoRepository.save(movie).log();
@@ -119,7 +158,12 @@ class MoviesInfoRepositoryTest extends TestContainersConfig {
     @Test
     @DirtiesContext
     void checkMovieDeletingById() {
-        movieInfoRepository.deleteById(MOVIE_INFOS.get(0).getMovieInfoId()).block();
+        assert !MOVIE_INFOS.isEmpty();
+        assert MOVIE_INFOS.get(0) != null;
+        var movieId = MOVIE_INFOS.get(0).getMovieInfoId();
+        assert movieId != null;
+
+        movieInfoRepository.deleteById(movieId).block();
         var movies = movieInfoRepository.findAll().log();
 
         StepVerifier.create(movies)

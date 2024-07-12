@@ -29,7 +29,7 @@ public class MoviesInfoService {
     }
 
     @Transactional
-    public Mono<MovieInfo> updateMovieInfo(MovieInfo updatedMovieInfo, @NotBlank String id) {
+    public Mono<MovieInfo> updateMovieInfoById(MovieInfo updatedMovieInfo, @NotBlank String id) {
         return movieInfoRepository.findById(id)
                 .flatMap(movieInfo -> {
                     movieInfo.setCast(updatedMovieInfo.getCast());
@@ -43,5 +43,13 @@ public class MoviesInfoService {
     @Transactional
     public Mono<Void> deleteMovieInfoById(String id) {
         return movieInfoRepository.deleteById(id);
+    }
+
+    public Flux<MovieInfo> getMovieInfoByYear(Integer year) {
+        return movieInfoRepository.findByYear(year);
+    }
+
+    public Flux<MovieInfo> getMovieInfoByName(String name) {
+        return movieInfoRepository.findByName(name);
     }
 }

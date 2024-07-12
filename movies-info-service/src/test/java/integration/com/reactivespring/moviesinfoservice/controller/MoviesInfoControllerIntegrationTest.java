@@ -77,7 +77,6 @@ class MoviesInfoControllerIntegrationTest extends TestContainersConfig {
                 .is2xxSuccessful()
                 .expectBodyList(MovieInfo.class)
                 .hasSize(3);
-
     }
 
     @Test
@@ -91,7 +90,30 @@ class MoviesInfoControllerIntegrationTest extends TestContainersConfig {
                 .is2xxSuccessful()
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Dark Knight Rises");
+    }
 
+    @Test
+    void getMovieInfoByYear() {
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "?year=2005")
+                .exchange()
+                .expectStatus()
+                .is2xxSuccessful()
+                .expectBody()
+                .jsonPath("$.[0].name").isEqualTo("Batman Begins");
+    }
+
+    @Test
+    void getMovieInfoById_notFound() {
+        var movieInfoId = "abc";
+        movieInfoRepository.deleteById(movieInfoId).block();
+        webTestClient
+                .get()
+                .uri(MOVIES_INFO_URL + "/{id}", movieInfoId)
+                .exchange()
+                .expectStatus()
+                .isNotFound();
     }
 
     @Test
