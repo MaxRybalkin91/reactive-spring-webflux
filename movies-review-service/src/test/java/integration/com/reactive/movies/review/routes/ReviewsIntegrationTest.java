@@ -123,4 +123,16 @@ public class ReviewsIntegrationTest extends TestContainersConfig {
                 .expectStatus()
                 .isBadRequest();
     }
+
+    @Test
+    @DirtiesContext
+    void updateReview_notFound() {
+        webTestClient
+                .put()
+                .uri(REVIEWS_URL + "/{id}", "not_found")
+                .bodyValue(new Review("not_found", "abc", "Awesome Movie", 9.0))
+                .exchange()
+                .expectStatus()
+                .isNotFound();
+    }
 }

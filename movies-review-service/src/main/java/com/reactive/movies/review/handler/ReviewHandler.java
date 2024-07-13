@@ -49,9 +49,7 @@ public class ReviewHandler {
                 .doOnNext(this::validate)
                 .flatMap(req -> {
                     var reviewId = request.pathVariable("id");
-                    var existingReview = reviewRepository.findById(reviewId);
-
-                    return existingReview
+                    return reviewRepository.findById(reviewId)
                             .flatMap(review -> request.bodyToMono(Review.class)
                                     .map(reqReview -> {
                                         review.setComment(reqReview.getComment());
@@ -60,17 +58,14 @@ public class ReviewHandler {
                                     })
                                     .flatMap(reviewRepository::save)
                                     .flatMap(savedReview -> ServerResponse.accepted().bodyValue(savedReview))
-                            )
-                            .switchIfEmpty(ServerResponse.noContent().build());
-                });
-
+                            );
+                })
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> deleteReview(ServerRequest request) {
         var reviewId = request.pathVariable("id");
-        var existingReview = reviewRepository.findById(reviewId);
-
-        return existingReview
+        return reviewRepository.findById(reviewId)
                 .flatMap(review -> reviewRepository.deleteById(reviewId)
                         .then(Mono.defer(() -> ServerResponse.noContent().build())))
                 .switchIfEmpty(ServerResponse.notFound().build());

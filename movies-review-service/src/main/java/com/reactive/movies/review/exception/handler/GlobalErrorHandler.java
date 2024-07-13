@@ -18,16 +18,13 @@ public class GlobalErrorHandler implements ErrorWebExceptionHandler {
         log.error("Exception message is {} ", ex.getMessage(), ex);
         DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
         var errorMessage = dataBufferFactory.wrap(ex.getMessage().getBytes());
-
+        var httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         if (ex instanceof ReviewDataException) {
-            exchange.getResponse().setStatusCode(HttpStatus.BAD_REQUEST);
-            return exchange.getResponse().writeWith(Mono.just(errorMessage));
+            httpStatus = HttpStatus.BAD_REQUEST;
+        } else if (ex instanceof ReviewNotFoundException) {
+            httpStatus = HttpStatus.NOT_FOUND;
         }
-        if (ex instanceof ReviewNotFoundException) {
-            exchange.getResponse().setStatusCode(HttpStatus.NOT_FOUND);
-            return exchange.getResponse().writeWith(Mono.just(errorMessage));
-        }
-        exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+        exchange.getResponse().setStatusCode(httpStatus);
         return exchange.getResponse().writeWith(Mono.just(errorMessage));
     }
 }
