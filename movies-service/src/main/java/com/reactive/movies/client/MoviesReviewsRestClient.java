@@ -36,8 +36,7 @@ public class MoviesReviewsRestClient {
                 .uri(url)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, get4xxErrorResult(movieId))
-                .onStatus(HttpStatusCode::is5xxServerError, get5xxErrorResult(movieId)
-                )
+                .onStatus(HttpStatusCode::is5xxServerError, get5xxErrorResult(movieId))
                 .bodyToFlux(Review.class);
     }
 
