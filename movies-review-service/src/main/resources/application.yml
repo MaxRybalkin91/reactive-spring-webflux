@@ -1,0 +1,2 @@
+spring.application.name: movies-review-service
+server.port: 8082

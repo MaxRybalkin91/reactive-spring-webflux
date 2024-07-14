@@ -1,5 +1,9 @@
-spring:
-  profiles:
-    active: local
-server:
-  port: 8082
+spring.application.name: movies-service
+server.port: 8080
+---
+spring.config.activate.on-profile: "local"
+web-client:
+  movies-info:
+    url: http://localhost:8081/v1/moviesInfo
+  movies-review:
+    url: http://localhost:8082/v1/reviews
