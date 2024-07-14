@@ -1,10 +1,10 @@
 package routes;
 
-import com.reactive.movies.review.domain.Review;
-import com.reactive.movies.review.exception.handler.GlobalErrorHandler;
-import com.reactive.movies.review.handler.ReviewHandler;
-import com.reactive.movies.review.repository.ReviewRepository;
-import com.reactive.movies.review.router.ReviewRouter;
+import com.reactive.movies.info.domain.Review;
+import com.reactive.movies.info.exception.handler.GlobalErrorHandler;
+import com.reactive.movies.info.handler.ReviewHandler;
+import com.reactive.movies.info.repository.ReviewRepository;
+import com.reactive.movies.info.router.ReviewRouter;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
