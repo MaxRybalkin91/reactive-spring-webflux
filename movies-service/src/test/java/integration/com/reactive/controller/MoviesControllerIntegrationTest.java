@@ -40,7 +40,7 @@ public class MoviesControllerIntegrationTest {
     @Test
     void retrieveMovieById() {
         var movieId = "abc";
-        stubFor(get(urlEqualTo("/v1/movieInfos" + "/" + movieId))
+        stubFor(get(urlEqualTo("/v1/movieInfos/" + movieId))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBodyFile("movieInfo.json")));
@@ -65,8 +65,8 @@ public class MoviesControllerIntegrationTest {
 
     @Test
     void retrieveMovieById_404() {
-        var movieId = "abc";
-        stubFor(get(urlEqualTo("/v1/movieInfos" + "/" + movieId))
+        var movieId = "abc404infos";
+        stubFor(get(urlEqualTo("/v1/movieInfos/" + movieId))
                 .willReturn(aResponse()
                         .withStatus(404)
                 ));
@@ -83,13 +83,14 @@ public class MoviesControllerIntegrationTest {
                 .expectStatus()
                 .is4xxClientError()
                 .expectBody(String.class)
-                .isEqualTo("There is no MovieInfo Available for the passed in Id : abc");
+                .isEqualTo("There is no MovieInfo Available for the passed in Id : " + movieId);
+        WireMock.verify(1, getRequestedFor(urlPathEqualTo("/v1/movieInfos/" + movieId)));
     }
 
     @Test
     void retrieveMovieById_reviews_404() {
-        var movieId = "abc";
-        stubFor(get(urlEqualTo("/v1/movieInfos" + "/" + movieId))
+        var movieId = "abc404reviews";
+        stubFor(get(urlEqualTo("/v1/movieInfos/" + movieId))
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBodyFile("movieInfo.json")
@@ -110,16 +111,17 @@ public class MoviesControllerIntegrationTest {
                     assert Objects.requireNonNull(movie).getReviewList().isEmpty();
                     assertEquals("Batman Begins", movie.getMovieInfo().getName());
                 });
+
+        WireMock.verify(2, getRequestedFor(urlPathEqualTo("/v1/reviews")));
     }
 
     @Test
     void retrieveMovieById_5XX() {
-        var movieId = "abc";
-        stubFor(get(urlEqualTo("/v1/movieInfos" + "/" + movieId))
+        var movieId = "abc500infos";
+        stubFor(get(urlEqualTo("/v1/movieInfos/" + movieId))
                 .willReturn(aResponse()
                         .withStatus(500)
                         .withBody("MovieInfo Service Unavailable")
-
                 ));
 
         webTestClient
@@ -130,5 +132,7 @@ public class MoviesControllerIntegrationTest {
                 .is5xxServerError()
                 .expectBody(String.class)
                 .isEqualTo("Server Exception in MoviesInfoService MovieInfo Service Unavailable");
+
+        WireMock.verify(4, getRequestedFor(urlPathMatching("/v1/movieInfos/" + movieId)));
     }
 }
