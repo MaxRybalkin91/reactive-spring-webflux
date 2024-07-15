@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
 class MoviesInfoControllerIntegrationTest extends TestContainersConfig {
+    private static final String MOVIES_INFO_URL = "/v1/movieInfos";
+
     @Autowired
     private MovieInfoRepository movieInfoRepository;
 
     @Autowired
     private WebTestClient webTestClient;
-
-    static String MOVIES_INFO_URL = "/v1/movieInfos";
 
     @BeforeEach
     void setUp() {
@@ -108,11 +108,6 @@ class MoviesInfoControllerIntegrationTest extends TestContainersConfig {
                 .is2xxSuccessful()
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Dark Knight Rises");
-                /*.expectBody(MovieInfo.class)
-                .consumeWith(movieInfoEntityExchangeResult -> {
-                    var movieInfo = movieInfoEntityExchangeResult.getResponseBody();
-                    assertNotNull(movieInfo);
-                });*/
     }
 
     @Test

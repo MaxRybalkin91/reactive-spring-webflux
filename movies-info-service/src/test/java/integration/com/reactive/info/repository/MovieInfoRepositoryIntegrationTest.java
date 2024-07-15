@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import reactor.test.StepVerifier;
 
@@ -41,28 +42,21 @@ class MovieInfoRepositoryIntegrationTest extends TestContainersConfig {
     }
 
     @Test
+    @DirtiesContext
     void findAll() {
-        //given
-
-        //when
         var moviesInfoFlux = movieInfoRepository.findAll().log();
 
-        //then
         StepVerifier.create(moviesInfoFlux)
                 .expectNextCount(3)
                 .verifyComplete();
     }
 
     @Test
+    @DirtiesContext
     void findById() {
-        //given
-
-        //when
         var moviesInfoMono = movieInfoRepository.findById("abc").log();
 
-        //then
         StepVerifier.create(moviesInfoMono)
-                //.expectNextCount(1)
                 .assertNext(movieInfo -> {
                     assertEquals("Dark Knight Rises", movieInfo.getName());
                 })
@@ -70,17 +64,14 @@ class MovieInfoRepositoryIntegrationTest extends TestContainersConfig {
     }
 
     @Test
-    void saveMovieinfo() {
-        //given
+    @DirtiesContext
+    void saveMovieInfo() {
         var movieInfo = new MovieInfo(null, "Batman Begins1",
                 2005, List.of("Christian Bale", "Michael Cane"), LocalDate.parse("2005-06-15"));
 
-        //when
         var moviesInfoMono = movieInfoRepository.save(movieInfo).log();
 
-        //then
         StepVerifier.create(moviesInfoMono)
-                //.expectNextCount(1)
                 .assertNext(movieInfo1 -> {
                     assertNotNull(movieInfo1.getMovieInfoId());
                     assertEquals("Batman Begins1", movieInfo1.getName());
@@ -89,46 +80,37 @@ class MovieInfoRepositoryIntegrationTest extends TestContainersConfig {
     }
 
     @Test
+    @DirtiesContext
     void updateMovieInfo() {
-        //given
         var movieInfo = movieInfoRepository.findById("abc").block();
+        assert movieInfo != null;
         movieInfo.setYear(2021);
 
-        //when
         var moviesInfoMono = movieInfoRepository.save(movieInfo).log();
 
-        //then
         StepVerifier.create(moviesInfoMono)
-                //.expectNextCount(1)
                 .assertNext(movieInfo1 -> {
-
                     assertEquals(2021, movieInfo1.getYear());
                 })
                 .verifyComplete();
     }
 
     @Test
+    @DirtiesContext
     void deleteMovieInfo() {
-        //given
-
-        //when
         movieInfoRepository.deleteById("abc").block();
         var moviesInfoFlux = movieInfoRepository.findAll().log();
 
-        //then
         StepVerifier.create(moviesInfoFlux)
                 .expectNextCount(2)
                 .verifyComplete();
     }
 
     @Test
+    @DirtiesContext
     void findByYear() {
-        //given
-
-        //when
         var moviesInfoFlux = movieInfoRepository.findByYear(2005).log();
 
-        //then
         StepVerifier.create(moviesInfoFlux)
                 .expectNextCount(1)
                 .verifyComplete();

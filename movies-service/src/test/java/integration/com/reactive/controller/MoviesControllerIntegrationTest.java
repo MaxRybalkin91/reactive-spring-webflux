@@ -15,10 +15,10 @@ import java.util.Objects;
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
-@AutoConfigureWireMock(port = 8084) // spin up a httpserver in port 8084
+@AutoConfigureWireMock(port = 8084)
 @TestPropertySource(
         properties = {
                 "restClient.moviesInfoUrl=http://localhost:8084/v1/movieInfos",
@@ -26,9 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         }
 )
 public class MoviesControllerIntegrationTest {
-
     @Autowired
-    WebTestClient webTestClient;
+    private WebTestClient webTestClient;
 
     @Test
     void retrieveMovieById() {
@@ -100,7 +99,7 @@ public class MoviesControllerIntegrationTest {
                 .expectBody(Movie.class)
                 .consumeWith(movieEntityExchangeResult -> {
                     var movie = movieEntityExchangeResult.getResponseBody();
-                    assert Objects.requireNonNull(movie).getReviewList().size() == 0;
+                    assert Objects.requireNonNull(movie).getReviewList().isEmpty();
                     assertEquals("Batman Begins", movie.getMovieInfo().getName());
                 });
     }

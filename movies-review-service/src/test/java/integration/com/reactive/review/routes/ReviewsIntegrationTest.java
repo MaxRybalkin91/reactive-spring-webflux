@@ -18,6 +18,7 @@ import java.util.List;
 @ActiveProfiles("test")
 @AutoConfigureWebTestClient
 public class ReviewsIntegrationTest extends TestContainersConfig {
+    private static final String REVIEWS_URL = "/v1/reviews";
 
     @Autowired
     private WebTestClient webTestClient;
@@ -25,11 +26,8 @@ public class ReviewsIntegrationTest extends TestContainersConfig {
     @Autowired
     private ReviewReactiveRepository reviewReactiveRepository;
 
-    static String REVIEWS_URL = "/v1/reviews";
-
     @BeforeEach
     void setUp() {
-
         var reviewsList = List.of(
                 new Review(null, 1L, "Awesome Movie", 9.0),
                 new Review(null, 1L, "Awesome Movie1", 9.0),
@@ -45,11 +43,7 @@ public class ReviewsIntegrationTest extends TestContainersConfig {
 
     @Test
     void addReview() {
-
-        //given
         var review = new Review(null, 1L, "Awesome Movie", 9.0);
-
-        //when
 
         webTestClient
                 .post()
@@ -65,7 +59,5 @@ public class ReviewsIntegrationTest extends TestContainersConfig {
                     assert savedReview != null;
                     assert savedReview.getReviewId() != null;
                 });
-
-        //then
     }
 }

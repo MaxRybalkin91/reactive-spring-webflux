@@ -3,6 +3,7 @@ package com.reactive.controller;
 import com.reactive.client.MoviesInfoRestClient;
 import com.reactive.client.ReviewsRestClient;
 import com.reactive.domain.Movie;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,19 +12,13 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/v1/movies")
+@RequiredArgsConstructor
 public class MoviesController {
-
-    private MoviesInfoRestClient moviesInfoRestClient;
-    private ReviewsRestClient reviewsRestClient;
-
-    public MoviesController(MoviesInfoRestClient moviesInfoRestClient, ReviewsRestClient reviewsRestClient) {
-        this.moviesInfoRestClient = moviesInfoRestClient;
-        this.reviewsRestClient = reviewsRestClient;
-    }
+    private final MoviesInfoRestClient moviesInfoRestClient;
+    private final ReviewsRestClient reviewsRestClient;
 
     @GetMapping("/{id}")
     public Mono<Movie> retrieveMovieById(@PathVariable("id") String movieId) {
-
         return moviesInfoRestClient.retrieveMovieInfo(movieId)
                 .flatMap(movieInfo -> {
                     var reviewsListMono = reviewsRestClient.retrieveReviews(movieId)
@@ -31,6 +26,5 @@ public class MoviesController {
 
                     return reviewsListMono.map(reviews -> new Movie(movieInfo, reviews));
                 });
-
     }
 }
